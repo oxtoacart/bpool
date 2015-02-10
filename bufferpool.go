@@ -41,5 +41,8 @@ Put returns the given Buffer to the BufferPool.
 */
 func (bp *BufferPool) Put(b *bytes.Buffer) {
 	b.Reset()
-	bp.c <- b
+	select {
+	case bp.c <- b:
+	default: // Discard the buffer if the pool is full.
+	}
 }
