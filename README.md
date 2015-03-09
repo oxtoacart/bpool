@@ -14,7 +14,7 @@ See [godoc.org](http://godoc.org/github.com/oxtoacart/bpool) or use `godoc githu
 
 ```go
 
-var bufpool *bpol.BufferPool
+var bufpool *bpool.BufferPool
 
 func main() {
 
