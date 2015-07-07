@@ -10,6 +10,10 @@ bpool provides the following pool types:
   [bytes.Buffers](http://golang.org/pkg/bytes/#Buffer).
 * [bpool.BytePool](https://godoc.org/github.com/oxtoacart/bpool#BytePool) which
   provides a fixed-size pool of `[]byte` slices with a pre-set width (length).
+* [bpool.SizedBufferPool](https://godoc.org/github.com/oxtoacart/bpool#SizedBufferPool), 
+  which is an alternative to `bpool.BufferPool` that pre-sizes the capacity of
+  buffers issued from the pool and discards buffers that have grown too large
+  upon return.
 
 A common use case for this package is to use buffers to execute HTML templates
 against (via ExecuteTemplate) or encode JSON into (via json.NewEncoder). This
