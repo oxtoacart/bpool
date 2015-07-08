@@ -46,6 +46,9 @@ func (bp *SizedBufferPool) Put(b *bytes.Buffer) {
 
 	// Release buffers over our maximum capacity and re-create a pre-sized
 	// buffer to replace it.
+	// Note that the cap(b.Bytes()) provides the capacity from the read off-set
+	// only, but as we've called b.Reset() the full capacity of the underlying
+	// byte slice is returned.
 	if cap(b.Bytes()) > bp.a {
 		b = bytes.NewBuffer(make([]byte, 0, bp.a))
 	}
