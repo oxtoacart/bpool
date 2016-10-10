@@ -6,16 +6,19 @@ import (
 )
 
 func TestBufferPool(t *testing.T) {
-	var size int = 4
+	maxSize := 4
 
-	bufPool := NewBufferPool(size)
+	bufPool := NewBufferPool(maxSize)
 
 	// Test Get/Put
 	b := bufPool.Get()
+	if b.Cap() != 0 {
+		t.Errorf("bufferpool width invalid: got %v want %v", b.Cap(), 0)
+	}
 	bufPool.Put(b)
 
 	// Add some additional buffers beyond the pool size.
-	for i := 0; i < size*2; i++ {
+	for i := 0; i < maxSize*2; i++ {
 		bufPool.Put(bytes.NewBuffer([]byte{}))
 	}
 
@@ -23,8 +26,35 @@ func TestBufferPool(t *testing.T) {
 	close(bufPool.c)
 
 	// Check the size of the pool.
-	if len(bufPool.c) != size {
-		t.Fatalf("bufferpool size invalid: got %v want %v", len(bufPool.c), size)
+	if len(bufPool.c) != maxSize {
+		t.Fatalf("bufferpool size invalid: got %v want %v", len(bufPool.c), maxSize)
+	}
+}
+
+func TestBufferPoolWidth(t *testing.T) {
+	maxSize := 4
+	width := 10
+
+	bufPool := NewBufferPoolWidth(maxSize, width)
+
+	// Test Get/Put
+	b := bufPool.Get()
+	if b.Cap() != width {
+		t.Errorf("bufferpool width invalid: got %v want %v", b.Cap(), width)
+	}
+	bufPool.Put(b)
+
+	// Add some additional buffers beyond the pool size.
+	for i := 0; i < maxSize*2; i++ {
+		bufPool.Put(bytes.NewBuffer([]byte{}))
+	}
+
+	// Close the channel so we can iterate over it.
+	close(bufPool.c)
+
+	// Check the size of the pool.
+	if len(bufPool.c) != maxSize {
+		t.Fatalf("bufferpool size invalid: got %v want %v", len(bufPool.c), maxSize)
 	}
 
 }
