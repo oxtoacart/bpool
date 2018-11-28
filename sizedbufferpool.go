@@ -11,7 +11,7 @@ type SizedBufferPool struct {
 	a int
 }
 
-// SizedBufferPool creates a new BufferPool bounded to the given size.
+// NewSizedBufferPool creates a new BufferPool bounded to the given size.
 // size defines the number of buffers to be retained in the pool and alloc sets
 // the initial capacity of new buffers to minimize calls to make().
 //
