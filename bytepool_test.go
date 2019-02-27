@@ -19,7 +19,23 @@ func TestBytePool(t *testing.T) {
 		t.Fatalf("bytepool length invalid: got %v want %v", len(b), width)
 	}
 
-	bufPool.Put(b)
+	// Try putting some invalid buffers into pool
+	bufPool.Put(make([]byte, width-1))
+	bufPool.Put(make([]byte, width)[2:])
+	if len(bufPool.c) > 0 {
+		t.Fatal("bytepool should have rejected invalid packets")
+	}
+
+	// Try putting a short slice into pool
+	bufPool.Put(make([]byte, width)[:2])
+	if len(bufPool.c) != 1 {
+		t.Fatal("bytepool should have accepted short slice with sufficient capacity")
+	}
+
+	b = bufPool.Get()
+	if len(b) != width {
+		t.Fatalf("bytepool length invalid: got %v want %v", len(b), width)
+	}
 
 	// Fill the pool beyond the capped pool size.
 	for i := 0; i < size*2; i++ {
