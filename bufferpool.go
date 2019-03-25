@@ -8,12 +8,21 @@ import (
 // channel.
 type BufferPool struct {
 	c chan *bytes.Buffer
+	w int
 }
 
-// NewBufferPool creates a new BufferPool bounded to the given size.
-func NewBufferPool(size int) (bp *BufferPool) {
+// NewBufferPool creates a new BufferPool bounded to the given maxSize
+// with a buffer width initialized to 0.
+func NewBufferPool(maxSize int) (bp *BufferPool) {
+	return NewBufferPoolWidth(maxSize, 0)
+}
+
+// NewBufferPoolWidth creates a new BufferPool bounded to the given maxSize
+// with new buffer's backend byte slices sized based on width.
+func NewBufferPoolWidth(maxSize, width int) (bp *BufferPool) {
 	return &BufferPool{
-		c: make(chan *bytes.Buffer, size),
+		c: make(chan *bytes.Buffer, maxSize),
+		w: width,
 	}
 }
 
@@ -25,7 +34,7 @@ func (bp *BufferPool) Get() (b *bytes.Buffer) {
 	// reuse existing buffer
 	default:
 		// create new buffer
-		b = bytes.NewBuffer([]byte{})
+		b = bytes.NewBuffer(make([]byte, 0, bp.w))
 	}
 	return
 }
