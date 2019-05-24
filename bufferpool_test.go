@@ -23,7 +23,7 @@ func TestBufferPool(t *testing.T) {
 	close(bufPool.c)
 
 	// Check the size of the pool.
-	if len(bufPool.c) != size {
+	if bufPool.NumPooled() != size {
 		t.Fatalf("bufferpool size invalid: got %v want %v", len(bufPool.c), size)
 	}
 

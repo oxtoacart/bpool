@@ -44,6 +44,11 @@ func (bp *BytePool) Put(b []byte) {
 	}
 }
 
+// NumPooled returns the number of items currently pooled.
+func (bp *BytePool) NumPooled() int {
+	return len(bp.c)
+}
+
 // Width returns the width of the byte arrays in this pool.
 func (bp *BytePool) Width() (n int) {
 	return bp.w
